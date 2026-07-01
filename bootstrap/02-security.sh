@@ -24,12 +24,14 @@ Recommended:
 Commands:
   ./bootstrap.sh security --dry-run
   ./bootstrap.sh security --apply
+  ./bootstrap.sh security --tailscale-only-ssh-dry-run
+  ./bootstrap.sh security --tailscale-only-ssh
 
 Safety:
-- This module does NOT disable SSH password login.
-- This module does NOT remove existing SSH firewall rules.
-- This module does NOT force Tailscale-only SSH.
-- Advanced SSH lock-down should be done only after key login is verified.
+- Baseline mode does NOT disable SSH password login.
+- Baseline mode does NOT remove existing SSH access.
+- Tailscale-only SSH removes broad public SSH access from UFW.
+- Use Tailscale-only SSH only after confirming SSH works over Tailscale.
 TEXT
 }
 
@@ -69,8 +71,7 @@ apply_security() {
   run_cmd "sudo ufw default deny incoming"
   run_cmd "sudo ufw default allow outgoing"
 
-  # Safe default: keep normal SSH allowed to avoid lockout.
-  # Advanced Tailscale-only SSH can be added later.
+  # Safe baseline: keep regular SSH to avoid lockout.
   run_cmd "sudo ufw allow 22/tcp"
 
   if command_exists tailscale; then
@@ -103,6 +104,46 @@ APT::Periodic::Unattended-Upgrade \"1\";"
   info "Security baseline completed"
 }
 
+apply_tailscale_only_ssh() {
+  info "Configuring SSH to be reachable only through Tailscale firewall interface"
+
+  if [ "$DRY_RUN" = false ]; then
+    sudo -v
+  fi
+
+  if ! command_exists tailscale; then
+    error "Tailscale is not installed. Refusing to continue."
+    exit 1
+  fi
+
+  if ! ip link show tailscale0 >/dev/null 2>&1; then
+    error "tailscale0 interface not found. Refusing to continue."
+    exit 1
+  fi
+
+  if ! systemctl is-active --quiet tailscaled; then
+    error "tailscaled service is not active. Refusing to continue."
+    exit 1
+  fi
+
+  run_cmd "mkdir -p backups/security"
+  run_cmd "sudo cp /etc/ufw/user.rules backups/security/user.rules.before-tailscale-only-ssh 2>/dev/null || true"
+  run_cmd "sudo cp /etc/ufw/user6.rules backups/security/user6.rules.before-tailscale-only-ssh 2>/dev/null || true"
+
+  # First allow SSH on Tailscale interface.
+  run_cmd "sudo ufw allow in on tailscale0 to any port 22 proto tcp"
+
+  # Then remove broad SSH exposure.
+  run_cmd "sudo ufw --force delete allow 22/tcp || true"
+
+  run_cmd "sudo ufw reload"
+  run_cmd "sudo ufw status verbose"
+
+  info "Tailscale-only SSH firewall mode completed"
+  warn "Open a NEW terminal and test: ssh <user>@<tailscale-hostname>"
+  warn "Do not close your current terminal until the new SSH test works."
+}
+
 case "$mode" in
   --dry-run)
     DRY_RUN=true
@@ -123,6 +164,28 @@ case "$mode" in
     fi
 
     apply_security
+    ;;
+  --tailscale-only-ssh-dry-run)
+    DRY_RUN=true
+    apply_tailscale_only_ssh
+    ;;
+  --tailscale-only-ssh)
+    DRY_RUN=false
+
+    echo "WARNING: This removes broad SSH access from UFW."
+    echo "SSH will be allowed only through tailscale0."
+    echo
+    echo "Before continuing, confirm this works from another machine:"
+    echo "  ssh <your-user>@<tailscale-hostname>"
+    echo
+    read -r -p "Type TAILSCALE to continue: " confirm
+
+    if [ "$confirm" != "TAILSCALE" ]; then
+      echo "Cancelled."
+      exit 0
+    fi
+
+    apply_tailscale_only_ssh
     ;;
   guidance|"")
     show_guidance
