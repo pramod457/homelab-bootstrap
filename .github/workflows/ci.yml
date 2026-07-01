@@ -15,5 +15,8 @@ jobs:
       - name: Bash syntax check
         run: bash tests/syntax.sh
 
+      - name: JSON output smoke test
+        run: bash tests/json-output.sh
+
       - name: Basic secret scan
         run: bash scripts/secret-scan-basic.sh
