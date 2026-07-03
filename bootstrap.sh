@@ -44,6 +44,12 @@ Usage:
   ./bootstrap.sh tailscale --dry-run
   ./bootstrap.sh tailscale --verify
   ./bootstrap.sh tailscale --netcheck
+  ./bootstrap.sh caddy --dry-run
+  ./bootstrap.sh caddy --verify
+  ./bootstrap.sh cloudflare-tunnel --dry-run
+  ./bootstrap.sh cloudflare-tunnel --verify
+  ./bootstrap.sh exposure --verify
+  ./bootstrap.sh v1 --verify
 
 Commands:
   help                 Show help
@@ -62,6 +68,10 @@ Commands:
   docker               Install or verify Docker Engine
   nvidia              Verify NVIDIA GPU and container readiness
   tailscale           Verify Tailscale remote access readiness
+  caddy               Verify Caddy web server readiness
+  cloudflare-tunnel   Verify Cloudflare Tunnel readiness
+  exposure            Audit local exposure risks
+  v1                  Run full V1 verification
 HELP
 }
 
@@ -98,6 +108,22 @@ case "$cmd" in
     ;;
   tailscale)
     bash "$ROOT_DIR/bootstrap/14-tailscale.sh" "$@"
+    ;;
+  caddy)
+    shift
+    bash "$ROOT_DIR/bootstrap/16-caddy.sh" "$@"
+    ;;
+  cloudflare-tunnel)
+    shift
+    bash "$ROOT_DIR/bootstrap/17-cloudflare-tunnel.sh" "$@"
+    ;;
+  exposure)
+    shift
+    bash "$ROOT_DIR/bootstrap/18-exposure.sh" "$@"
+    ;;
+  v1)
+    shift
+    bash "$ROOT_DIR/bootstrap/19-v1-verify.sh" "$@"
     ;;
   *)
     error "Unknown command: $cmd"

@@ -43,3 +43,38 @@ If no NVIDIA GPU is detected, GPU checks are skipped instead of failing. This al
 ## Install Location
 
 Installs the repo into `~/.local/share/homelab-bootstrap/repo` and creates a symlink at `~/.local/bin/homelab-bootstrap`.
+
+
+## v1.0.0 scope
+
+`homelab-bootstrap` is a safe Ubuntu homelab / AI workstation bootstrap and verification toolkit.
+
+Validated areas:
+
+- Ubuntu baseline
+- UFW / Fail2Ban security
+- Tailscale-only SSH posture
+- Docker and Docker Compose
+- NVIDIA GPU readiness
+- NVIDIA container runtime readiness
+- Azure Arc
+- Azure Monitor Agent
+- Safe package updates
+- Caddy readiness
+- Cloudflare Tunnel readiness
+- Local exposure audit
+
+Safety boundaries:
+
+- does not open router ports automatically
+- does not change DNS automatically
+- does not expose private subdomains automatically
+- does not store provider credentials
+- does not run autoremove automatically
+- does not run dist-upgrade/full-upgrade automatically
+
+Main commands:
+
+    homelab-bootstrap menu
+    homelab-bootstrap v1 --verify
+
