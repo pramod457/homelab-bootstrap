@@ -16,6 +16,7 @@ homelab-bootstrap
 
 Usage:
   ./bootstrap.sh help
+  ./bootstrap.sh menu
   ./bootstrap.sh doctor
   ./bootstrap.sh doctor --json
   ./bootstrap.sh doctor --sudo
@@ -46,6 +47,7 @@ Usage:
 
 Commands:
   help                 Show help
+  menu                 Interactive command menu
   doctor               Run local health check
   doctor --json        Run local health check and output JSON
   doctor --sudo        Run health check with sudo-backed checks
@@ -66,6 +68,9 @@ HELP
 case "$cmd" in
   help|-h|--help)
     show_help
+    ;;
+  menu)
+    bash "$ROOT_DIR/bootstrap/15-menu.sh" "$@"
     ;;
   doctor|verify)
     bash "$ROOT_DIR/bootstrap/10-verify.sh" "$@"
