@@ -22,7 +22,10 @@ mkdir -p "$BIN_DIR"
 
 if [ -d "$INSTALL_DIR/.git" ]; then
   echo "Updating existing installation..."
-  git -C "$INSTALL_DIR" pull --ff-only
+  git -C "$INSTALL_DIR" remote set-url origin "$REPO_URL"
+  git -C "$INSTALL_DIR" fetch origin main
+  git -C "$INSTALL_DIR" checkout main
+  git -C "$INSTALL_DIR" pull --ff-only origin main
 else
   echo "Cloning repository..."
   rm -rf "$INSTALL_DIR"
