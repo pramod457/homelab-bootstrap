@@ -110,19 +110,15 @@ case "$cmd" in
     bash "$ROOT_DIR/bootstrap/14-tailscale.sh" "$@"
     ;;
   caddy)
-    shift
     bash "$ROOT_DIR/bootstrap/16-caddy.sh" "$@"
     ;;
   cloudflare-tunnel)
-    shift
     bash "$ROOT_DIR/bootstrap/17-cloudflare-tunnel.sh" "$@"
     ;;
   exposure)
-    shift
     bash "$ROOT_DIR/bootstrap/18-exposure.sh" "$@"
     ;;
   v1)
-    shift
     bash "$ROOT_DIR/bootstrap/19-v1-verify.sh" "$@"
     ;;
   *)
