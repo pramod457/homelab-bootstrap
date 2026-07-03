@@ -40,7 +40,7 @@ fi
 echo
 echo "== Update installed copy =="
 tmp_installer="$(mktemp)"
-curl -fsSL https://raw.githubusercontent.com/pramod457Nit/homelab-bootstrap/main/install.sh -o "$tmp_installer"
+curl -fsSL https://raw.githubusercontent.com/pramod457/homelab-bootstrap/main/install.sh -o "$tmp_installer"
 bash -n "$tmp_installer"
 bash "$tmp_installer"
 rm -f "$tmp_installer"

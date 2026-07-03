@@ -3,7 +3,7 @@
 ## Option 1: Clone manually
 
 ```bash
-git clone https://github.com/pramod457Nit/homelab-bootstrap.git
+git clone https://github.com/pramod457/homelab-bootstrap.git
 cd homelab-bootstrap
 ./bootstrap.sh doctor
 ```
@@ -11,7 +11,7 @@ cd homelab-bootstrap
 ## Option 2: Install command
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/pramod457Nit/homelab-bootstrap/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/pramod457/homelab-bootstrap/main/install.sh | bash
 ```
 
 Then run:

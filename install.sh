@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO_URL="${HOMELAB_BOOTSTRAP_REPO:-https://github.com/pramod457Nit/homelab-bootstrap.git}"
+REPO_URL="${HOMELAB_BOOTSTRAP_REPO:-https://github.com/pramod457/homelab-bootstrap.git}"
 INSTALL_DIR="${HOMELAB_BOOTSTRAP_DIR:-$HOME/.local/share/homelab-bootstrap/repo}"
 BIN_DIR="$HOME/.local/bin"
 BIN_PATH="$BIN_DIR/homelab-bootstrap"
